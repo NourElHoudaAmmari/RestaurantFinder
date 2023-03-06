@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">J\'ai faim</string>
+    <string name="second_name">J\'ai faim</string>
+    <string name="slogan">La sensation de faim vous appelle, il est temps de manger !</string>
+    <string name="search_bar">Rechercher</string>
+    <string name="button1">langues</string>
+    <string name="button2">Trouver des restaurants</string>
+    <string name="mark_location">Ma position</string>
+    <string name="button3">Commençons</string>
+    <string name="keyword">Restaurant</string>
+</resources>

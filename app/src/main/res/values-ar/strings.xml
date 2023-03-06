@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">أنا جائع</string>
+
+    <string name="second_name">أنا جائع</string>
+    <string name="slogan">آلام الجوع تدعو ، حان وقت الأكل!</string>
+    <string name="search_bar">بحث</string>
+    <string name="button1">اللغات</string>
+    <string name="button2">البحث عن مطاعم</string>
+    <string name="mark_location">موقعي</string>
+    <string name="button3">هيا بنا نبدأ</string>
+    <string name="keyword">مطعم</string>
+
+</resources>
