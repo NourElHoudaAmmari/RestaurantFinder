@@ -11,5 +11,8 @@
     <string name="mark_location">موقعي</string>
     <string name="button3">هيا بنا نبدأ</string>
     <string name="keyword">مطعم</string>
-
+    <string name="location">الموقع غير موجود</string>
+    <string name="defaultmap"> طبيعي</string>
+    <string name="sat">الأقمار الصناعية</string>
+    <string name="Terrain">تضاريس</string>
 </resources>

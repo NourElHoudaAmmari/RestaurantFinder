@@ -9,4 +9,8 @@
     <string name="mark_location">Ma position</string>
     <string name="button3">Commençons</string>
     <string name="keyword">Restaurant</string>
+    <string name="location">Emplacement introuvable</string>
+    <string name="defaultmap"> Normale</string>
+    <string name="sat">Satellite</string>
+    <string name="Terrain">Terrain</string>
 </resources>

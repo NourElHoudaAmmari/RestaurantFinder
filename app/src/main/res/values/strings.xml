@@ -1,12 +1,17 @@
 <resources>
     <string name="app_name">I\'m Hungry</string>
 
-<string name="second_name">I\'m Hungry</string>
+    <string name="second_name">I\'m Hungry</string>
     <string name="slogan">Hunger pangs are calling, time to eat!</string>
     <string name="search_bar">Search</string>
     <string name="button1">Languages</string>
     <string name="button2">Find Restaurants</string>
     <string name="button3">Let\'s get started</string>
-<string name="mark_location">My Locations</string>
+    <string name="mark_location">My Locations</string>
     <string name="keyword">Restaurant</string>
+    <string name="location">Location not found</string>
+    <string name="defaultmap"> Normal</string>
+    <string name="sat">Satellite</string>
+    <string name="Terrain">Terrain</string>
+
 </resources>

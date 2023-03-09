@@ -42,7 +42,7 @@ startActivity(intent);
     }
 
     private void showChangeLanguageDialog() {
-final String listItems[] = {"English", "français","عربي"};
+final String listItems[] = {"English", "français","عربي" };
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(SplashScreen.this);
         mBuilder.setTitle("Choose Language...");
         mBuilder.setSingleChoiceItems(listItems, -1, new DialogInterface.OnClickListener() {
@@ -76,7 +76,7 @@ dialogInterface.dismiss();
         editor.putString("My_Lang",lang);
         editor.apply();
     }
-    public void loadLocale(){
+   public void loadLocale(){
         SharedPreferences prefs = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         String language = prefs.getString("My_Lang","");
         setLocale(language);
