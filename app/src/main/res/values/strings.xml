@@ -13,5 +13,10 @@
     <string name="defaultmap"> Normal</string>
     <string name="sat">Satellite</string>
     <string name="Terrain">Terrain</string>
-
+    <string name="placeName">Place Name</string>
+    <string name="placeAdress">Place Adress</string>
+    <string name="openhour">Opening Hour :</string>
+    <string name="btnshowd">Show direction</string>
+    <string name="message">please wait ....</string>
+    <string name="showmap">Show on Map</string>
 </resources>

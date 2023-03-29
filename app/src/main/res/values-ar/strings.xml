@@ -15,4 +15,11 @@
     <string name="defaultmap"> طبيعي</string>
     <string name="sat">الأقمار الصناعية</string>
     <string name="Terrain">تضاريس</string>
+    <string name="placeName">اسم المكان</string>
+    <string name="placeAdress">عنوان المكان</string>
+    <string name="openhour">ساعة الافتتاح :</string>
+    <string name="btnshowd">اظهر الاتجاه</string>
+    <string name="message">انتظر من فضلك ....</string>
+    <string name="showmap">عرض على الخريطة</string>
+
 </resources>

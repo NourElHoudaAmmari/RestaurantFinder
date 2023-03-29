@@ -4,9 +4,17 @@ public class Results {
     private String[] types;
 
     private String business_status;
-
     private String icon;
 
+    public Opening_hours getOpening_hours() {
+        return opening_hours;
+    }
+
+    public void setOpening_hours(Opening_hours opening_hours) {
+        this.opening_hours = opening_hours;
+    }
+
+    private Opening_hours opening_hours;
     private String rating;
 
     private String icon_background_color;

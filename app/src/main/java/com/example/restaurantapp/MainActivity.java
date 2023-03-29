@@ -1,5 +1,7 @@
 package com.example.restaurantapp;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +9,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -26,6 +30,7 @@ import android.widget.Toast;
 import com.example.restaurantapp.Model.MyPlaces;
 import com.example.restaurantapp.Model.Results;
 import com.example.restaurantapp.Remote.IGoogleAPIService;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,7 +48,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.maps.PlaceAutocompleteRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +65,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +82,8 @@ GoogleApiClient.OnConnectionFailedListener,LocationListener
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
     GoogleMap map;
-    Marker marker;
+    private String  direction_DEST;
+    Marker marker, markdest;
     LocationRequest mLocationRequest;
     SearchView searchView;
     IGoogleAPIService mService;
@@ -82,11 +95,63 @@ GoogleApiClient.OnConnectionFailedListener,LocationListener
     LatLng currentlatLng;
     Button btn_find;
     FloatingActionButton btnMapType,enableTraffic,currentLocation;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnMapType=findViewById(R.id.btnMapType);
+        String apiKey = getString(R.string.map_key);
+
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
+
+// Create a new Places client instance.
+     /*   PlacesClient placesClient = Places.createClient(this);
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                if (place.getLatLng() != null) {
+                    LatLng placeLatLng_dest = place.getLatLng();
+                    supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(@NonNull GoogleMap googleMap) {
+                            if (markdest != null) {
+                                markdest.remove();
+                            }
+
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLatLng_dest));
+                           markdest = googleMap.addMarker(new MarkerOptions().position(placeLatLng_dest).title(place.getName()));
+
+                        }
+                    });
+                    direction_DEST = place.getId();
+                    Log.d("direction_DEST", place.getId());
+                }
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            }
+
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });*/
         btn_find=findViewById(R.id.btn_find);
 btn_find.setOnClickListener(new View.OnClickListener() {
     @Override
@@ -153,7 +218,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
             public boolean onQueryTextSubmit(String query) {
                 String location = searchView.getQuery().toString();
                 if(location == null){
-                    Toast.makeText(MainActivity.this,R.string.location,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,(getString(R.string.location)),Toast.LENGTH_SHORT).show();
                 }else{
                     Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
                     try {
@@ -165,7 +230,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                             }
                             MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(location);
                             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,5);
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,10);
                             map.animateCamera(cameraUpdate);
                             marker = map.addMarker(markerOptions);
                         }
@@ -173,7 +238,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                         e.printStackTrace();
                     }
                 }
-              /*  List<Address> addressList = null;
+                List<Address> addressList = null;
                 if (location != null || !location.equals("")) {
                     Geocoder geocoder = new Geocoder(MainActivity.this);
                     try {
@@ -185,7 +250,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     map.addMarker(new MarkerOptions().position(latLng).title(location));
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                }*/
+                }
                 return false;
             }
 
@@ -194,6 +259,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                 return false;
             }
         });
+
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         String[] placeTypeList={"restaurant"};
@@ -211,7 +277,9 @@ btn_find.setOnClickListener(new View.OnClickListener() {
         }
         supportMapFragment.getMapAsync(this);
         mService = Common.getGoogleAPIService();
+
     }
+
 
     private void nearByPlace(String placeType) {
         map.clear();
@@ -220,6 +288,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                 .enqueue(new Callback<MyPlaces>() {
                     @Override
                     public void onResponse(Call<MyPlaces> call, Response<MyPlaces> response) {
+                        currentPlace = response.body(); //remember assign value for currentPlace
                         if(response.isSuccessful()){
                             for(int i=0; i<response.body().getResults().length;i++){
                                 MarkerOptions markerOptions = new MarkerOptions();
@@ -285,7 +354,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                             LatLng latLng = new LatLng(location.getLatitude()
                                     , location.getLongitude());
                             MarkerOptions options = new MarkerOptions().position(latLng)
-                                    .title(String.valueOf(R.string.mark_location));
+                                    .title(getString(R.string.mark_location));
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             googleMap.addMarker(options);
 
@@ -312,6 +381,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
         }
     }
 
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
@@ -321,7 +391,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
             public boolean onMarkerClick(@NonNull Marker marker) {
                 Common.currentResult = currentPlace.getResults()[Integer.parseInt(marker.getSnippet())];
 
-
+startActivity(new Intent(MainActivity.this,secondActivity.class));
                 return true;
             }
         });
@@ -369,7 +439,7 @@ longitude = location.getLongitude();
 LatLng latLng = new LatLng(latitude,longitude);
 MarkerOptions markerOptions = new MarkerOptions()
         .position(latLng)
-        .title(String.valueOf(R.string.mark_location))
+        .title(getString(R.string.mark_location))
         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 marker = map.addMarker(markerOptions);
 map.moveCamera(CameraUpdateFactory.newLatLng(latLng));

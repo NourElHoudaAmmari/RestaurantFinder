@@ -4,6 +4,7 @@ import com.example.restaurantapp.Model.MyPlaces;
 import com.example.restaurantapp.Model.Results;
 import com.example.restaurantapp.Remote.IGoogleAPIService;
 import com.example.restaurantapp.Remote.RetrofitClient;
+import com.example.restaurantapp.Remote.RetrofitScalarsClient;
 
 public class Common {
     public static Results currentResult;
@@ -11,5 +12,8 @@ public class Common {
 
     public static IGoogleAPIService getGoogleAPIService(){
         return RetrofitClient.getClient(GOOGLE_API_URL).create(IGoogleAPIService.class);
+    }
+    public static IGoogleAPIService getGoogleAPIServiceScalars(){
+        return RetrofitScalarsClient.getScalarsClient(GOOGLE_API_URL).create(IGoogleAPIService.class);
     }
 }
