@@ -82,6 +82,7 @@ GoogleApiClient.OnConnectionFailedListener,LocationListener
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
     GoogleMap map;
+    private  Marker destinationMarker = null;
     private String  direction_DEST;
     Marker marker, markdest;
     LocationRequest mLocationRequest;
@@ -95,6 +96,7 @@ GoogleApiClient.OnConnectionFailedListener,LocationListener
     LatLng currentlatLng;
     Button btn_find;
     FloatingActionButton btnMapType,enableTraffic,currentLocation;
+    private LatLng destination = null;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,7 +214,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
                 popupMenu.show(); // show the popup menu
             }
         });
-        searchView = findViewById(R.id.sv_location);
+       /* searchView = findViewById(R.id.sv_location);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -258,7 +260,7 @@ btn_find.setOnClickListener(new View.OnClickListener() {
             public boolean onQueryTextChange(String s) {
                 return false;
             }
-        });
+        });*/
 
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -277,9 +279,55 @@ btn_find.setOnClickListener(new View.OnClickListener() {
         }
         supportMapFragment.getMapAsync(this);
         mService = Common.getGoogleAPIService();
+        setupAutoCompleteFragment();
+
+    }
+    private void setupAutoCompleteFragment(){
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        assert autocompleteFragment != null;
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                if (place.getLatLng() != null) {
+                    destination = place.getLatLng();
+                    setDestinationMarker(place.getLatLng());
+                }
+            }
+
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+    }
+    private void setDestinationMarker(LatLng latLng) {
+        if (destinationMarker!=null){
+            destinationMarker.remove();
+        }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+       map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        destinationMarker = map.addMarker(markerOptions);
+       // destinationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location));
 
     }
 
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(map !=null){
+            map.clear();
+        }
+    }
 
     private void nearByPlace(String placeType) {
         map.clear();
